@@ -1,6 +1,7 @@
 :root {
   --header-text-color: black;
   --text-color: black;
+  --disclaimer-text: black;
   --nav-text-color: black;
   --nav-border-color: darkgray;
   --nav-background-color: lightgray;
@@ -25,21 +26,24 @@ body {
   font-family: Arial;
 }
 
+
 #disclaimer {
-  color: red;
-  font-size: 0.9em;
+  color: var(--disclaimer-color);
+  font-size: 0.8em;
+  /*
   position: fixed;
   margin: 0;
-  padding: 0;
-  bottom: 0;
-  left: 0;
-  width: 100vw;
-  height: 3%;
+  padding: 0.5em;
+  bottom: 1em;
+  left: 1em;
+  width: calc(var(--nav-bar-width) - 2em);
+  height: 8%;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid red;
+  border: 1px dotted red;
   background-color: var(--page-background-color);
+  */
 }
 
 header {
@@ -169,6 +173,16 @@ code {
     top: 10%;
     left: 0;
     width: 100vw;
-    height: 87%;
+    height: 90%;
+    padding-bottom: 5em;
   }
+
+}
+
+@media only screen and (max-width: 400px) {
+  #navbar header:first-of-type {
+    font-weight: bold;
+    font-size: 1.25em;
+  }
+
 }
