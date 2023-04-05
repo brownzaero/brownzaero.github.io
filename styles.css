@@ -1,100 +1,174 @@
-body {
-  width: 100%;
-  height: 100vh;
+:root {
+  --header-text-color: black;
+  --text-color: black;
+  --nav-text-color: black;
+  --nav-border-color: darkgray;
+  --nav-background-color: lightgray;
+  --nav-li-hover-color: gray;
+  --page-background-color: white;
+  --nav-bar-width: 200px;
+  --code-background-color: whitesmoke; 
+}
+
+*,
+::before,
+::after {
+  padding: 0;
   margin: 0;
-  background-color: black;
-  color: white;
-  font-family: Verdana;
+  box-sizing: border-box;
   font-size: 16px;
 }
 
-h1, p {
-  margin: 1em auto;
+body {
+  color: var(--text-color);
+  background-color: var(--page-background-color);
+  font-family: Arial;
+}
+
+#disclaimer {
+  color: red;
+  font-size: 0.9em;
+  position: fixed;
+  margin: 0;
+  padding: 0;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  height: 3%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid red;
+  background-color: var(--page-background-color);
+}
+
+header {
+  color: var(--header-text-color);
+  font-size: 1.5em;
+  margin: 5px;
   text-align: center;
+  font-weight: bold;
 }
 
-form {
-  width: 60vw;
-  max-width: 500px;
-  min-width: 300px;
-  margin: 0 auto;
-  padding-bottom: 2em;
+#navbar header:first-of-type {
+  font-weight: bold;
+  font-size: 1.75em;
 }
 
-fieldset {
-  border: none;
-  padding: 1rem 0;
-  border-bottom: 5px solid red;
+#main-doc {
+  position: fixed;
+  width: calc(100vw - var(--nav-bar-width));
+  height: 100vh;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: var(--nav-bar-width);
+  margin: 0 10px;
+  padding: 20px;
+  overflow-x: hidden;
+  white-space: normal;
+  text-align: left;
 }
 
-fieldset:last-of-type {
-  border-bottom: none;
+#main-doc header {
+  text-align: left;
+  margin: 0;
 }
 
-label {
-  display: block;
-  margin: 0.5rem 0;
+#navbar {
+  position: fixed;
+  width: var(--nav-bar-width);
+  top: 0;
+  left: 0;
+  height: 100vh;
+  border-right: solid var(--nav-border-color);
+  background-color: var(--nav-background-color);
 }
 
-input,
-textarea,
-select {
-  margin: 10px 0 0 0;
+#navbar li {
+  position: relative;
   width: 100%;
-  min-height: 2em;
-  font-family: Tahoma;
-  font-size: 16px;
+  border-top: 1px solid var(--nav-border-color);
 }
 
-input, textarea, select {
-  background-color: black;
-  border: 2px solid white;
+#navbar li:hover {
+  background-color: var(--nav-li-hover-color);
+  font-weight: bold;
 }
 
-input {
-  color: #ffffff;
-}
-
-textarea {
-  font-style:italic;
-  color: white;
-}
-
-select {
-  color: #ffffff;
-}
-
-.inline {
-  width: unset;
-  margin: 0 0.5em 0 0;
-  vertical-align: middle;
-}
-
-input[type="submit"] {
+#navbar a {
   display: block;
-  width: 60%;
-  margin: 1em auto;
-  height: 2em;
-  font-size: 1.1rem;
-  background-color: black;
-  border-color: white;
-  min-width: 300px;
+  color: var(--nav-text-color);
+  text-decoration: none;
+  text-align: center;
+  padding: 10px;
 }
 
-input[type="submit"]:hover {
-  background-color: red;
+p {
+  font-size: 1em;
+  margin-bottom: 1em;
+  margin-top: 0.5em;
 }
 
-input[type="submit"]:active {
-  background-color: white;
-  border: 4px solid red;
-  color: black
+#main-doc ul {
+  margin-left: 2em;
+  list-style-type: square;
+  margin-bottom: 1em;
 }
 
-input[type='radio'], input[type='checkbox'] {
-  accent-color: red;
+#assumptions ul {
+  list-style: none;
+  margin-left: 1em;
 }
 
-.make_red:checked, .make_red:active {
-  background-color: red;
+#assumptions ul li:before {
+  content: '✓';
+  font-weight: bold;
+  padding-right: 0.5em;
+}
+
+#building_the_sql li {
+  list-style-type: none;
+  padding-bottom: 0.5em;
+}
+
+#peoplesoft_tables li {
+  list-style-type: none;
+  padding-bottom: 0.5em;
+}
+
+code {
+  background-color: var(--code-background-color);
+  border-radius: 10px;
+  display: block;
+  text-align: left;
+  overflow-x: auto;
+  padding: 1em;
+  padding-top: 0;
+  cursor: crosshair;
+}
+
+@media only screen and (max-width: 800px) {
+  #navbar {
+    position: fixed;
+    top: 0;
+    width: 100vw;
+    height: 10%;
+    border-bottom: solid var(--nav-border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #navbar li {
+    display: none;
+  }
+
+  #main-doc {
+    position: fixed;
+    top: 10%;
+    left: 0;
+    width: 100vw;
+    height: 87%;
+  }
 }
