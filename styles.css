@@ -11,6 +11,12 @@
   --code-background-color: whitesmoke; 
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  * {
+    scroll-behavior: smooth;
+  }
+}
+
 *,
 ::before,
 ::after {
