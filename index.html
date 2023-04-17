@@ -1,180 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+  <header id="header">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>How to Write a Vendor Payment History SQL Report in PeopleSoft</title>
-    <link rel="stylesheet" href="./styles.css">
-  </head>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.4.0/css/all.css">
+    <link rel="stylesheet" href="styles.css" />
+    <title>Zach's Portfolio</title>
+  </header>
   <body>
     <nav id="navbar">
-      <header>Writing a PeopleSoft Vendor Payment History</header>
       <ul>
-        <li><a class="nav-link" href="#introduction">Introduction</a></li>
-        <li><a class="nav-link" href="#assumptions">Assumptions</a></li>
-        <li><a class="nav-link" href="#requirements">Requirements</a></li>
-        <li><a class="nav-link" href="#peoplesoft_tables">PeopleSoft Tables</a></li>
-        <li><a class="nav-link" href="#building_the_sql">Building the SQL</a></li>
-        <li><a class="nav-link" href="#final_report">Final Report</a></li>
+          <li><a class="nav-link nav" href="#welcome-section">About</a></li>
+          <li><a class="nav-link nav" href="#projects">Projects</a></li>
+          <li><a class="nav-link nav" href="#contact">Contact</a></li>
       </ul>
     </nav>
-    <main id="main-doc">
-      <section id="introduction" class="main-section">
-        <header>Introduction</header>
-        <p id="disclaimer">* Disclaimer: This page is a demo project and the guide is incomplete. *</p>
-        <p>Hello! I'm Zach, a systems analyst with over 8 years of experience supporting PeopleSoft Financials. In the non-profit healthcare industry, it is often required to to generate reports/queries/files for services that the health system enrolls. Banks, consultants, and other service providers often request a specific and common data pull before initiating an enrollment process: Vendor Payment History.</p>
-        <p>These types of reports have various names, but ultimately, they illustrate the health system's high volume suppliers and therefore which priority they have when embarking on a new roll-out.</p>
+    <main>
+      <section id="welcome-section">
+        <h1>Hey I am Zach</h1>
+        <p class="subtext">a web developer</p>
       </section>
-      <section id="assumptions" class="main-section">
-        <header>Assumptions</header>
-        <p>This guide assumes you have the following basic background:</p>
-        <ul>
-          <li>Familiar with the Accounts Payable (AP) module in PeopleSoft Financials.</li>
-          <li>Good working knowledge of Oracle SQL.</li>
-          <li>Strong knowledge of PeopleSoft record structures.</li>
-          <li>A general understanding of AP payment methodologies. </li>
-        </ul>
-        <p></p>
+      <section id="projects">
+        <h2>These are some of my projects:</h2>
+        <div id="tiles">
+          <div class="project-tile">
+            <div class="iframe-wrapper">
+              <iframe class="project-preview" loading="lazy" width="200" height="200" src="https://codepen.io/brownzaero/full/zYmYLXL" title="survey_preview"></iframe>
+            </div>
+            <a href="https://codepen.io/brownzaero/full/zYmYLXL" target="_blank">Survey</a>
+          </div>
+          <div class="project-tile">
+            <div class="iframe-wrapper">
+              <iframe class="project-preview" loading="lazy" width="200" height="200" src="https://codepen.io/brownzaero/full/rNqNXBK" title="tribute_preview"></iframe>
+            </div>
+            <a class="project-preview" href="https://codepen.io/brownzaero/full/rNqNXBK" target="_blank">Tribute</a>
+          </div>
+          <div class="project-tile">
+            <div class="iframe-wrapper">
+              <iframe class="project-preview" loading="lazy" width="200" height"200" src="https://codepen.io/brownzaero/full/VwEwoZo" title="techdoc_preview"></iframe>
+            </div>
+            <a href="https://codepen.io/brownzaero/full/VwEwoZo" target="_blank">Technical Document</a>
+          </div>
+          <div class="project-tile">
+            <div class="iframe-wrapper">
+              <iframe class="project-preview" loading="lazy" width="200" height="200" src="https://codepen.io/brownzaero/full/GRYRVRp" title="product_preview"></iframe>
+            </div>
+            <a href="https://codepen.io/brownzaero/full/GRYRVRp" target="_blank">Product Page</a>
+          </div>
+        </div>
       </section>
-      <section id="requirements" class="main-section">
-        <header>Requirements</header>
-        <p>In this guide, we will assume that the following indicators are the key items being looked for and that we are only looking at activity over the last year.</p>
-        <ul>
-          <li><b>Total Spend</b> - Total dollars paid to supplier.</li>
-          <li><b>Payment Count</b> - Total number of payments made to the supplier.</li>
-          <li><b>Invoice Count</b> - Total number of invoices from supplier.</li>
-          <li><b>Last Payment Date</b> - Date of last payment made to supplier.</li>
-          <li><b>Payment Method</b> - The supplier's preferred and default payment method.</li>
-          <li><b>Remit Address</b> - The supplier's current remittance location (i.e. address, state, country).</li>
-        </ul>
-        <p></p>
-      </section>
-      <section id="peoplesoft_tables" class="main-section">
-        <header>PeopleSoft Tables</header>
-        <p>We'll acquire the necessary data elements from the following tables:</p>
-        <ul>
-          <li>PS_VENDOR</li>
-          <li>PS_VENDOR_LOC</li>
-          <li>PS_VENDR_ADDR</li>
-          <li>PS_VENDR_PAY</li>
-          <li>PS_VENDR_WTHD</li>
-          <li>PS_VOUCHER</li>
-        </ul>
-        <p>Now that we know we can acquire all the desired information, we are free to move on and strategize.</p>
-      </section>
-      <section id="building_the_sql" class="main-section">
-        <header>Building the SQL</header>
-        <p>There are some key things to consider before we start SQL development. </p>
-        <ul>
-          <li><b>Unique ID</b> - In PeopleSoft Financials, suppliers have an ID field, but they can also have multiple locations which act similar to a sub-ID. As a result, we must leverage ID+Location throughout our logic. Luckily for us, all of the tables have those two fields; the only exception is the voucher table.</li>
-          <li><b>Joins</b> - Since basically all of our tables contain the necessary unique ID, we can perform direct (inner) joins against all of these tables. However, not all paid suppliers will be a withholding entity nor is it mandatory that they actually invoiced the health system. Therefore, we will left-join the corresponding tables so that if the desired data isn't available, then it won't remove the result..</li>
-          <li><b>Effective Dated Rows</b> - It is common in PeopleSoft tables to leverage effective date fields, so we must keep this in mind when querying certain records. In our case, the withholding, supplier location, supplier address, and supplier pay options records all contain rows that could contain multiple effective dates. To prevent duplicate rows and errant aggregate data, we will perform subqueries in our WHERE clause to ensure we are only handling the most recent row for that unique ID.</li>
-          <li><b>Criteria</b> - Our WHERE clause will perform the necessary filters to by applying conditions for our SQL. We will only look at paid (not voided or canceled) payments within the last year for recurring suppliers (not patient refunds or one-time suppliers). Also, we only want to provide vendors that are currentl flagged as 'active' in the system.</li>
-        </ul>
-        <p>Now that we have the necessary tables and strategy in mind, let's start build our SQL!.</p>
-      </section>
-      <section id="final_report" class="main-section">
-        <header>Final Report</header>
-        <p>Putting it all together!</p>
-        <p>Here's our final SQL broken down into its clauses:</p>
-        <pre>
-<code>
-SELECT  a.remit_vendor    AS vendor_id
-      , a.vndr_loc        AS remit_id
-      , h.name1           AS vendor_name
-      , c.address1        AS address1
-      , c.address2        AS address2
-      , c.address3        AS address3
-      , c.state           AS state
-      , c.postal          AS zip_code
-      , c.country         AS country_code
-      , Sum(a.pymnt_amt)  AS total_spend
-
-      , Nvl(g.invoice_count,0)                AS number_of_invoices
-      , To_Char(Max(a.pymnt_dt),'MM/DD/YYYY') AS last_payment
-
-      , Count(pymnt_id
-        ||pymnt_id_ref)   AS number_of_payments
-
-      , d.pymnt_method    AS vendor_default_payment_type
-      , d.emailid         AS peoplesoft_contact_email
-      , e.tin             AS tax_id_number
-      , b.pymnt_terms_cd  AS vendor_default_payment_terms
-</code>
-<code>
-FROM  ps_payment_tbl a
-    , ps_vendor h
-    , ps_vendor_loc b
-    , ps_vendor_addr c
-    , ps_vendor_pay d
-      left JOIN ps_vendor_wthd e ON d.vendor_id = e.vendor_id
-                                AND d.vndr_loc = e.vndr_loc
-                                AND e.effdt =  (SELECT Max(e_ed.effdt)
-                                                FROM   ps_vendor_wthd e_ed
-                                                WHERE  e.vendor_id = e_ed.vendor_id
-                                                   AND e.vndr_loc = e_ed.vndr_loc)
-
-      left JOIN  (SELECT f.vendor_id, f.vndr_loc, Count(f.business_unit||f.voucher_id) AS invoice_count
-                  FROM ps_voucher f
-                  WHERE f.entry_status = 'P'
-                    AND Trunc(f.entered_dt) >= SYSDATE - 365
-                  GROUP BY f.vendor_id, f.vndr_loc) g
-            ON  d.vendor_id = g.vendor_id
-            AND d.vndr_loc = g.vndr_loc
-</code>
-<code>
-WHERE a.pymnt_dt >= SYSDATE - 365
-  AND a.pymnt_status = 'P'
-  AND a.remit_vendor <> 'SINGLE'
-
-  AND a.remit_vendor = h.vendor_id
-  AND h.vendor_status = 'A'
-
-  AND a.remit_vendor = b.vendor_id
-  AND a.vndr_loc = b.vndr_loc
-  AND b.eff_status = 'A'
-  AND b.effdt = (SELECT Max(b_ed.effdt)
-                 FROM   ps_vendor_loc b_ed
-                 WHERE  b.vendor_id = b_ed.vendor_id
-                    AND b.vndr_loc = b_ed.vndr_loc
-                    AND b.setid = b_ed.setid)
-
-  AND b.vendor_id = c.vendor_id
-  AND b.remit_addr_seq_num = c.address_seq_num
-  AND c.effdt = (SELECT Max(c_ed.effdt)
-                 FROM   ps_vendor_addr c_ed
-                 WHERE  c.vendor_id = c_ed.vendor_id
-                    AND c.address_seq_num = c_ed.address_seq_num)
-
-  AND b.vendor_id = d.vendor_id
-  AND b.vndr_loc = d.vndr_loc
-  AND d.eff_status = 'A'
-  AND d.effdt = (SELECT Max(d_ed.effdt)
-                 FROM   ps_vendor_pay d_ed
-                 WHERE  d.vendor_id = d_ed.vendor_id
-                    AND d.vndr_loc = d_ed.vndr_loc)
-</code>
-<code>
-GROUP BY  a.remit_vendor
-        , a.vndr_loc
-        , h.name1
-        , c.address1
-        , c.address2
-        , c.address3
-        , c.state
-        , c.postal
-        , c.country
-        , d.pymnt_method
-        , g.invoice_count
-        , d.emailid
-        , e.tin
-        , b.pymnt_terms_cd
-</code>
-<code>
-ORDER BY a.remit_vendor ASC, a.vndr_loc ASC
-</code>
-        </pre>
+      <section id="contact">
+        <div id="contact-header">
+          <h1>Let's work together...</h1>
+          <h3>How do you take your coffee? ☕</h3>
+        </div>
+        <div id="socials">
+          <a href="https://www.facebook.com/" target="_blank"><i class="fa-brands fa-facebook"></i></a>
+          <a id="profile-link" href="https://github.com/brownzaero" target="_blank"><i class="fa-brands fa-github"></i></a>
+          <a href="https://www.linkedin.com/in/zachcbrown" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
+          <a href="https://twitter.com/ZBrownCreative" target="_blank"><i class="fa-brands fa-square-twitter"></i></a>
+        </div>
       </section>
     </main>
+    <footer id="footer">
+      <a href="#welcome-section" class="nav">Back to Top</a>
+    </footer>
   </body>
 </html>
